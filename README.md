@@ -55,8 +55,6 @@ class Boletas(Model):
         self.PALABRA = None
 
 if __name__ == "__main__":
-    alumno = Alumnos()
-    boleta = Boletas()
-    alumno.get(MATRICULA="24A0710217M0010")
+    alumno = Alumnos()alumno.get(MATRICULA="24A0710217M0010", related=True)
     print(alumno.BOLETAS)
     print(boleta.get_all(MATRICULA="24A0710217M0010"))
