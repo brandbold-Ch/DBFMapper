@@ -1,2 +1,5 @@
 /test
 /.venv
+/build
+/dist
+DBFMapper.egg-info

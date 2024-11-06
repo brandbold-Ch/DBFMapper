@@ -1,17 +1,16 @@
 from dbf import Table, READ_ONLY
-from typing import Any
 
 
 class Reader:
 
-    def __init__(self, file: str):
+    def __init__(self, file: str) -> None:
         self.table = Table(file)
         self.table.open(mode=READ_ONLY)
 
-    def get_table_by_index(self, posix: int) -> None:
+    def get_table_by_index(self, posix: int) -> Table:
         return self.table[posix]
 
-    def get_table_by_criteria(self, **kwargs) -> Any:
+    def get_table_by_criteria(self, **kwargs) -> list[Table]:
         condition = " and ".join(
             [
                 f"{k.lower()} == '{v}'" if str(v).isalnum() or str(v).isdigit()
@@ -20,5 +19,5 @@ class Reader:
         )
         return self.table.query(f"SELECT * WHERE {condition}")
 
-    def get_fields(self) -> list:
+    def get_fields(self) -> list[str]:
         return self.table.field_names
