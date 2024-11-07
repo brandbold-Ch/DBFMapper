@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="DBFMapper",
-    version="0.1.1",
+    version="0.1.2",
     author="Brandon Jared Molina Vazquez",
     author_email="jaredbrandon970@gmail.com",
     description="Mapper of .dbf tables to python objects, (read only)",
@@ -14,5 +14,5 @@ setup(
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.9",
+    python_requires=">=3.10",
 )
