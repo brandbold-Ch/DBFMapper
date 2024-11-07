@@ -1,6 +1,6 @@
-from typing import Annotated, get_origin, Any, TypeVar, Type, Generic, cast
-from build.lib.core.model import Model
+from typing import Annotated, get_origin, Any, TypeVar, Type, Generic
 from .core.base.base_model import BaseModel
+from .exception.exceptions import NotFoundTable, InvalidAnnotatedType, DBFException
 from .core.reader.reader import Reader
 
 
@@ -90,7 +90,7 @@ class Model(Generic[T]):
             Exception: If the variable is not of type `Annotated`.
         """
         if get_origin(var) != Annotated:
-            raise Exception("Invalid Type: Must be Annotated type.")
+            raise InvalidAnnotatedType("Invalid Type: Must be Annotated type.")
         return var.__dict__["__metadata__"]
 
     def _find_relationships(self) -> None:
@@ -105,23 +105,26 @@ class Model(Generic[T]):
         Raises:
             Exception: If there are issues with finding relationships.
         """
-        for subclass in self._subclasses():
-            if subclass.__name__ != self._subclass_name():
-                instance = subclass()
+        try:
+            for subclass in self._subclasses():
+                if subclass.__name__ != self._subclass_name():
+                    instance = subclass()
 
-                for k, v in instance.__dict__.items():
-                    if get_origin(v) == Annotated:
-                        metadata = self._subclass_meta(v)
+                    for k, v in instance.__dict__.items():
+                        if get_origin(v) == Annotated:
+                            metadata = self._subclass_meta(v)
 
-                        for rel in metadata[0]["foreign_key"]:
-                            if rel.__name__ == self._subclass_name():
-                                if hasattr(self.subclass, k):
-                                    condition = {str(k): getattr(self.subclass, k)}
-                                    setattr(
-                                        self.subclass,
-                                        instance._subclass_name(),
-                                        instance.get_all(**condition, easy_view=True)
-                                    )
+                            for rel in metadata[0]["foreign_key"]:
+                                if rel.__name__ == self._subclass_name():
+                                    if hasattr(self.subclass, k):
+                                        condition = {str(k): getattr(self.subclass, k)}
+                                        setattr(
+                                            self.subclass,
+                                            instance._subclass_name(),
+                                            instance.get_all(**condition, easy_view=True)
+                                        )
+        except Exception as e:
+            raise DBFException(e)
 
     def get(self, relates: bool = False, **kwargs) -> T:
         """
@@ -151,8 +154,7 @@ class Model(Generic[T]):
             if relates:
                 self._find_relationships()
         else:
-            raise Exception("Table not found by criteria.")
-
+            raise NotFoundTable("Table not found by criteria.")
         return self.subclass
 
     def get_all(self, easy_view: bool = False, **kwargs) -> list[T] | list[dict]:
@@ -170,20 +172,23 @@ class Model(Generic[T]):
         Returns:
             list[T] | list[dict]: A list of model instances or simplified dictionary representations.
         """
-        result: list = self.reader.get_table_by_criteria(**kwargs)
-        object_list: list = []
+        try:
+            result: list = self.reader.get_table_by_criteria(**kwargs)
+            object_list: list = []
 
-        for record in result:
-            new_object = type(self.subclass)()
+            for record in result:
+                new_object = type(self.subclass)()
 
-            for i, k in enumerate(self.reader.get_fields()):
-                if hasattr(new_object, k):
-                    setattr(new_object, k, str(record[i]).strip())
-            object_list.append(
-                new_object.to_repr() if easy_view else new_object
-            )
+                for i, k in enumerate(self.reader.get_fields()):
+                    if hasattr(new_object, k):
+                        setattr(new_object, k, str(record[i]).strip())
+                object_list.append(
+                    new_object.to_repr() if easy_view else new_object
+                )
 
-        return object_list
+            return object_list
+        except Exception as e:
+            raise DBFException(e)
 
     def __add__(self, other: T):
         """
@@ -198,9 +203,12 @@ class Model(Generic[T]):
         Returns:
             dict: A dictionary representation of the merged model data.
         """
-        new_repr = self.to_repr()
-        new_repr[other.__class__.__name__] = other.to_repr()
-        return new_repr
+        try:
+            new_repr = self.to_repr()
+            new_repr[other.__class__.__name__] = other.to_repr()
+            return new_repr
+        except Exception:
+            raise DBFException("Error getting data")
 
     def to_repr(self) -> dict:
         """
@@ -212,11 +220,14 @@ class Model(Generic[T]):
         Returns:
             dict: A dictionary representation of the model instance.
         """
-        repr_dict = {}
+        try:
+            repr_dict = {}
 
-        for k, v in self.subclass.__dict__.items():
-            if isinstance(v, type(self.subclass)) is False:
-                repr_dict[k] = v
-        repr_dict.pop("reader")
+            for k, v in self.subclass.__dict__.items():
+                if isinstance(v, type(self.subclass)) is False:
+                    repr_dict[k] = v
+            repr_dict.pop("reader")
 
-        return repr_dict
+            return repr_dict
+        except Exception:
+            raise DBFException("Error in data introspection")
