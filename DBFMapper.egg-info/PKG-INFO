@@ -7,7 +7,7 @@ Author: Brandon Jared Molina Vazquez
 Author-email: jaredbrandon970@gmail.com
 Classifier: Programming Language :: Python :: 3
 Classifier: Operating System :: OS Independent
-Requires-Python: >=3.10
+Requires-Python: >=3.9
 Description-Content-Type: text/markdown
 
 # GuÃ­a de Uso para el Mapeador de Archivos .dbf en Python
@@ -67,8 +67,6 @@ class Boletas(Model):
         self.PALABRA = None
 
 if __name__ == "__main__":
-    alumno = Alumnos()
-    boleta = Boletas()
-    alumno.get(MATRICULA="24A0710217M0010")
+    alumno = Alumnos().get(MATRICULA="24A0710217M0010", relates=True)
     print(alumno.BOLETAS)
     print(boleta.get_all(MATRICULA="24A0710217M0010"))
