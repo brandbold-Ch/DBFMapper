@@ -2,7 +2,7 @@ from typing import Annotated, get_origin, Any, TypeVar, Type, Generic
 from .core.base.base_model import BaseModel
 from .exception.exceptions import NotFoundTable, InvalidAnnotatedType, DBFException
 from .core.reader.reader import Reader
-
+from enum import Enum
 
 T = TypeVar('T', bound=BaseModel)
 

@@ -1,13 +1,13 @@
 Metadata-Version: 2.1
 Name: DBFMapper
-Version: 0.1.1
+Version: 0.1.2
 Summary: Mapper of .dbf tables to python objects, (read only)
 Home-page: https://github.com/brandbold-Ch/DBFMapper
 Author: Brandon Jared Molina Vazquez
 Author-email: jaredbrandon970@gmail.com
 Classifier: Programming Language :: Python :: 3
 Classifier: Operating System :: OS Independent
-Requires-Python: >=3.9
+Requires-Python: >=3.10
 Description-Content-Type: text/markdown
 
 # GuÃ­a de Uso para el Mapeador de Archivos .dbf en Python

@@ -13,6 +13,8 @@ dbfmapper/core/decorators/__init__.py
 dbfmapper/core/decorators/cache.py
 dbfmapper/core/reader/__init__.py
 dbfmapper/core/reader/reader.py
+dbfmapper/exception/__init__.py
+dbfmapper/exception/exceptions.py
 test/__init__.py
 test/user_model.py
 test/db/__init__.py
