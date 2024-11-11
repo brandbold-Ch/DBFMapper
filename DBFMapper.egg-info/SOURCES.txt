@@ -6,6 +6,10 @@ DBFMapper.egg-info/dependency_links.txt
 DBFMapper.egg-info/top_level.txt
 dbfmapper/__init__.py
 dbfmapper/model.py
+dbfmapper.egg-info/PKG-INFO
+dbfmapper.egg-info/SOURCES.txt
+dbfmapper.egg-info/dependency_links.txt
+dbfmapper.egg-info/top_level.txt
 dbfmapper/core/__init__.py
 dbfmapper/core/base/__init__.py
 dbfmapper/core/base/base_model.py

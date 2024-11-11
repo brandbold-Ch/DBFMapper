@@ -204,9 +204,8 @@ class Model(Generic[T]):
             dict: A dictionary representation of the merged model data.
         """
         try:
-            new_repr = self.to_repr()
-            new_repr[other.__class__.__name__] = other.to_repr()
-            return new_repr
+            setattr(self, other.__class__.__name__, other.to_repr())
+            return self
         except Exception:
             raise DBFException("Error getting data")
 

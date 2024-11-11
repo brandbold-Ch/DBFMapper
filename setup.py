@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="DBFMapper",
+    name="dbfmapper",
     version="0.1.1",
     author="Brandon Jared Molina Vazquez",
     author_email="jaredbrandon970@gmail.com",
